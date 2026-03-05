@@ -17,23 +17,14 @@ def index(request):
             country = form.cleaned_data['country']
             degree = form.cleaned_data['degree']
             future_years_str = form.cleaned_data['future_years']
-            file = request.FILES.get('file')
-            if file:
-                try:
-                    df = pd.read_csv(file)
-                except Exception as e:
-                    context['error'] = f"Could not read uploaded CSV: {e}"
-                    context['form'] = form
-                    return render(request, 'predictor/index.html', context)
-            else:
-                # Use default CSV
-                csv_path = os.path.join(os.path.dirname(__file__), '..', 'world_population.csv')
-                try:
-                    df = pd.read_csv(csv_path)
-                except Exception as e:
-                    context['error'] = f"Could not read default CSV: {e}"
-                    context['form'] = form
-                    return render(request, 'predictor/index.html', context)
+            # Use default CSV
+            csv_path = os.path.join(os.path.dirname(__file__), '..', 'world_population.csv')
+            try:
+                df = pd.read_csv(csv_path)
+            except Exception as e:
+                context['error'] = f"Could not read default CSV: {e}"
+                context['form'] = form
+                return render(request, 'predictor/index.html', context)
             
             try:
                 new_df = prepare_data(df, country=country)
